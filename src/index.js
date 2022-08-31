@@ -5,7 +5,7 @@ import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
 const formEl = document.querySelector('#search-form');
-const galleryEl = document.querySelector('.gallery');
+const gallery = document.querySelector('.gallery');
 const options = {
   root: null,
   rootMargin: '300px',
@@ -21,7 +21,7 @@ formEl.addEventListener('submit', onFormSubmit);
 
 function onFormSubmit(event) {
   event.preventDefault();
-  galleryEl.innerHTML = '';
+  gallery.innerHTML = '';
   page = 1;
 
   inputValue = event.currentTarget.elements.searchQuery.value;
@@ -33,14 +33,14 @@ async function createListImg(nameImg, page) {
     const newArrayImg = await newApiImg(nameImg, page);
     const markupImg = imgMarkup(newArrayImg.hits);
 
-    galleryEl.insertAdjacentHTML('beforeend', markupImg);
+    gallery.insertAdjacentHTML('beforeend', markupImg);
 
     lightboxGallery.refresh();
     notification(newArrayImg);
     observer.observe(guard);
   } catch {
     Notify.failure(
-      'Sorry, there are no images matching your search query. Please try again.'
+      'Sorry, there are no images matching your search query. Please, try again.'
     );
   }
 }
@@ -54,16 +54,16 @@ function updateList(entries) {
   });
 }
 
-function notification(obImg) {
-  if (obImg.total === 0) {
+function notification(imgAmnt) {
+  if (imgAmnt.total === 0) {
     return Notify.failure(
       'Sorry, there are no images matching your search query. Please try again.'
     );
   }
   if (page === 1) {
-    return Notify.success(`Hooray! We found ${obImg.total} images.`);
+    return Notify.success(`Hooray! We found ${imgAmnt.total} images.`);
   }
-  if (page === obImg.total % 40) {
+  if (page === imgAmnt.total % 40) {
     return Notify.info(
       "We're sorry, but you've reached the end of search results."
     );
