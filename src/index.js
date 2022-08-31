@@ -17,15 +17,20 @@ const lightboxGallery = new SimpleLightbox('.gallery a');
 let inputValue = '';
 let page = 1;
 
-formEl.addEventListener('submit', onFormSubmit);
-
-function onFormSubmit(event) {
-  event.preventDefault();
-  gallery.innerHTML = '';
-  page = 1;
-
-  inputValue = event.currentTarget.elements.searchQuery.value;
-  createListImg(inputValue, page);
+function notification(imgAmnt) {
+  if (imgAmnt.total === 0) {
+    return Notify.failure(
+      'Sorry, there are no images matching your search query. Please try again.'
+    );
+  }
+  if (page === 1) {
+    return Notify.success(`Hooray! We found ${imgAmnt.total} images.`);
+  }
+  if (page === imgAmnt.total % 40) {
+    return Notify.info(
+      "We're sorry, but you've reached the end of search results."
+    );
+  }
 }
 
 async function createListImg(nameImg, page) {
@@ -45,6 +50,17 @@ async function createListImg(nameImg, page) {
   }
 }
 
+function onFormSubmit(event) {
+  event.preventDefault();
+  gallery.innerHTML = '';
+  page = 1;
+
+  inputValue = event.currentTarget.elements.searchQuery.value;
+  createListImg(inputValue, page);
+}
+
+formEl.addEventListener('submit', onFormSubmit);
+
 function updateList(entries) {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
@@ -52,20 +68,4 @@ function updateList(entries) {
       createListImg(inputValue, page);
     }
   });
-}
-
-function notification(imgAmnt) {
-  if (imgAmnt.total === 0) {
-    return Notify.failure(
-      'Sorry, there are no images matching your search query. Please try again.'
-    );
-  }
-  if (page === 1) {
-    return Notify.success(`Hooray! We found ${imgAmnt.total} images.`);
-  }
-  if (page === imgAmnt.total % 40) {
-    return Notify.info(
-      "We're sorry, but you've reached the end of search results."
-    );
-  }
 }
