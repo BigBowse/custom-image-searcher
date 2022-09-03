@@ -35,7 +35,7 @@ function onFormSubmit(event) {
     return;
   }
     
-    observer.observe(guard);
+    observer.unobserve(guard);
     refs.galleryEl.innerHTML = '';
     page = 1;
   
@@ -51,6 +51,8 @@ async function createListImg(nameImg, page) {
     refs.galleryEl.insertAdjacentHTML('beforeend', imgMarkup(newArrayImg.hits));
 
     lightboxGallery.refresh();
+
+    observer.unobserve(guard);
     notification(newArrayImg, page);
   } catch {
     Notify.failure(
